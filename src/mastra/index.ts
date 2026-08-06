@@ -1,0 +1,19 @@
+import { Mastra } from '@mastra/core'
+import {assistantAgent} from "./agents/assistant";
+import {PostgresStore} from "@mastra/pg";
+import { env } from "../config";
+
+export function createMastra() {
+  return new Mastra({
+    agents: {
+      assistant: assistantAgent,
+    },
+    storage: new PostgresStore({
+      id: "mastra-storage",
+      connectionString: env.MASTRA_DATABASE_URL,
+      disableInit: false,
+    }),
+  });
+}
+
+export const mastra = createMastra();
