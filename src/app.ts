@@ -4,6 +4,8 @@ import {errorHandler} from './middlewares/error.middleware'
 import {httpLogger} from "./middlewares/logger.middleware";
 import {cors} from "hono/cors";
 import {registerUserRoutes} from "./modules/users/users.routes";
+import {registerSocialAccountRoutes} from "./modules/social-accounts/social-accounts.routes";
+import {registerAuthRoutes} from "./modules/auth/auth.routes";
 import { env } from './config'
 import { type HonoBindings, type HonoVariables, MastraServer } from '@mastra/hono'
 import { mastra } from './mastra'
@@ -46,8 +48,14 @@ app.get('/', (c) =>
 // Penanganan AppError/HTTPException ada di errorHandler.
 app.onError(errorHandler)
 
-const apiRoute = app.route("api", app)
+// `app.route("api", app)` TIDAK membuat sub-router "/api" — .route() di Hono
+// mengembalikan `this`, jadi itu memasang route di path polos (mis. `/auth`,
+// bukan `/api/auth`). Sub-app baru ini yang sebenarnya jadi namespace "/api".
+const apiRoute = new Hono()
+registerAuthRoutes(apiRoute)
 registerUserRoutes(apiRoute)
+registerSocialAccountRoutes(apiRoute)
+app.route("/api", apiRoute)
 
 export default {
     port: env.PORT, fetch: app.fetch

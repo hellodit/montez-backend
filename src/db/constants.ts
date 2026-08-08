@@ -81,6 +81,22 @@ export const CREDENTIAL_PROVIDER = {
 } as const;
 export type CredentialProvider = (typeof CREDENTIAL_PROVIDER)[keyof typeof CREDENTIAL_PROVIDER];
 
+/** Default kolom `social_accounts.platform`. */
+export const SOCIAL_PLATFORM = {
+  instagram: "instagram",
+} as const;
+export type SocialPlatform = (typeof SOCIAL_PLATFORM)[keyof typeof SOCIAL_PLATFORM];
+
+/**
+ * providerId plugin `generic-oauth` (better-auth) untuk koneksi Instagram —
+ * berakhir di kolom `account.provider_id` milik better-auth. Sengaja beda dari
+ * provider native "facebook" (lihat auth.ts) supaya tak pernah bisa dipakai
+ * sebagai jalur login. Dipakai bersama oleh auth.ts & social-accounts.service.ts
+ * (didudukkan di sini, bukan salah satu file itu, agar keduanya tak perlu
+ * saling impor).
+ */
+export const INSTAGRAM_OAUTH_PROVIDER_ID = "instagram";
+
 // ── webhooks ──────────────────────────────────────────────────────────────────
 
 /**

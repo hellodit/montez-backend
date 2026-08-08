@@ -22,7 +22,8 @@ const EnvSchema = z.object({
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
 
-    // Meta "Login with Facebook" OAuth (owner-access Instagram). Wajib untuk fitur ini.
+    // Instagram connect (owner-access) — "Instagram API with Instagram Login",
+    // bukan Facebook Login for Business. Kosong = endpoint connect membalas 503.
     META_APP_ID: z.string().optional(),
     META_APP_SECRET: z.string().optional(),
     META_REDIRECT_URI: z.string().optional(),

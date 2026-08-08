@@ -24,6 +24,10 @@ export class AppError extends Error {
   }
 }
 
+export function unauthorized(message: string): AppError {
+  return new AppError(message, 401);
+}
+
 export function notFound(message: string): AppError {
   return new AppError(message, 404);
 }
