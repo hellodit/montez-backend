@@ -1,6 +1,5 @@
 import type { MiddlewareHandler } from "hono";
-
-
+import { redactDeep } from "../lib/redact";
 
 const SENSITIVE_HEADERS = new Set([
   "authorization",
@@ -20,50 +19,6 @@ function headersToObject(h: Headers): Record<string, string> {
     out[key] = SENSITIVE_HEADERS.has(key.toLowerCase()) ? "[REDACTED]" : value;
   });
   return out;
-}
-
-/**
- * Nama field yang nilainya tidak boleh muncul di log (dibandingkan lowercase).
- * Tambah field domain-spesifik di sini bila perlu.
- */
-const SENSITIVE_FIELDS = new Set([
-  "content", // isi pesan chat & chunk dokumen (PII)
-  "email", // PII customer/contact — jangan di-log (CLAUDE.md §9)
-  "user_id", // widget chat: identifier customer = email (PII)
-  "userid",
-  "phone_number", // PII customer/contact
-  "phonenumber",
-  "persona", // system prompt agent
-  "auth_config", // credential tool eksternal (terenkripsi pun jangan di-log)
-  "authconfig",
-  "headers", // map header statis tool/mcp/webhook — bisa berisi kredensial (Authorization)
-  "api_key",
-  "apikey",
-  "access_key",
-  "accesskey",
-  "secret_key",
-  "secretkey",
-  "encryption_key",
-]);
-
-/** Sensitif bila nama field ada di set, atau mengandung pola rahasia umum. */
-function isSensitiveField(key: string): boolean {
-  const k = key.toLowerCase();
-  if (SENSITIVE_FIELDS.has(k)) return true;
-  return /(password|passwd|secret|token|credential)/.test(k);
-}
-
-/** Ganti nilai field sensitif jadi "[REDACTED]", rekursif (objek & array). */
-function redactDeep(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(redactDeep);
-  if (value && typeof value === "object") {
-    const out: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-      out[k] = isSensitiveField(k) ? "[REDACTED]" : redactDeep(v);
-    }
-    return out;
-  }
-  return value;
 }
 
 /** Hanya body teks/JSON yang aman dibaca; stream & binary di-skip. */

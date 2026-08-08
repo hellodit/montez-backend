@@ -18,6 +18,13 @@ async function syncInstagramAccountAfterLink(account: { userId: string; accountI
 export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
+  trustedOrigins: [
+    'http://localhost:3001',
+    'http://localhost:5173',
+    'http://localhost:4111',
+    'http://127.0.0.1:4111',
+    'https://stg.montezai.com',
+  ],
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema: { user, session, account, verification, jwks },

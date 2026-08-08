@@ -15,14 +15,13 @@ export const app = new Hono()
 app.use("*", httpLogger());
 const mastraServer = new MastraServer({ app, mastra, prefix: '/mastra' })
 
-// CORS — FE di repo terpisah, ditambah Mastra Studio (dev). `credentials: true`
-// wajib agar cookie sesi Better Auth ikut terkirim lintas-origin, tapi itu
-// melarang wildcard origin — makanya origin harus daftar eksplisit, bukan "*".
+// CORS — allow any origin. `credentials: true` forbids a literal "*" ACAO
+// (browsers drop it), so origin reflects back whatever Origin was sent.
 app.use(
     "*",
     cors({
         credentials: true,
-        origin: "*",
+        origin: (origin) => origin,
         allowHeaders: ["Content-Type", "Authorization"],
         allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     }),

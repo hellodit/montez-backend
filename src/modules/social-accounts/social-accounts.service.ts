@@ -7,17 +7,10 @@ import { ownedBy } from "../../db/helpers";
 import { AppError, notFound } from "../../lib/errors";
 import { betterAuthSessionHeaders } from "../../lib/better-auth-session";
 import { auth } from "../auth/auth";
+import { exchangeLongLivedToken, fetchInstagramProfile } from "../../thirdparty/instagram/instagram";
 import type { SocialAccountSummary } from "./social-accounts.types";
 
 const CALLBACK_STATUS_PARAM = "ig_status";
-
-type InstagramProfile = {
-  id: string;
-  username: string;
-  name?: string;
-  profile_picture_url?: string;
-  followers_count?: number;
-};
 
 /** Redirect FE dipakai untuk sukses & error — dibedakan lewat query param. */
 function buildCallbackUrl(status: "connected" | "error"): string {
@@ -31,34 +24,6 @@ function assertInstagramConfigured() {
   if (!env.META_APP_ID || !env.META_APP_SECRET) {
     throw new AppError("Instagram connect is not configured.", 503);
   }
-}
-
-/**
- * Tukar access token pendek (~1 jam, hasil OAuth Instagram) jadi token panjang
- * (~60 hari). Instagram tidak pakai grant `refresh_token` standar OAuth, jadi
- * langkah ini selalu perlu kode kustom terlepas dari mekanisme better-auth yang
- * dipakai (lihat spec, bagian "Full flow").
- */
-async function exchangeLongLivedToken(shortLivedToken: string): Promise<string> {
-  const url = new URL("https://graph.instagram.com/access_token");
-  url.searchParams.set("grant_type", "ig_exchange_token");
-  url.searchParams.set("client_secret", env.META_APP_SECRET ?? "");
-  url.searchParams.set("access_token", shortLivedToken);
-
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Instagram long-lived token exchange failed: ${res.status}`);
-  const body = (await res.json()) as { access_token: string };
-  return body.access_token;
-}
-
-async function fetchInstagramProfile(accessToken: string): Promise<InstagramProfile> {
-  const url = new URL("https://graph.instagram.com/me");
-  url.searchParams.set("fields", "id,username,name,profile_picture_url,followers_count");
-  url.searchParams.set("access_token", accessToken);
-
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Instagram profile fetch failed: ${res.status}`);
-  return (await res.json()) as InstagramProfile;
 }
 
 /**
@@ -76,7 +41,7 @@ export async function syncInstagramAccount(account: { userId: string; accountId:
         accountId: account.accountId,
       },
     });
-    const longLivedToken = await exchangeLongLivedToken(accessToken);
+    const { access_token: longLivedToken } = await exchangeLongLivedToken(accessToken, env.META_APP_SECRET ?? "");
     const profile = await fetchInstagramProfile(longLivedToken);
 
     await db.transaction(async (tx) => {
@@ -160,16 +125,21 @@ export async function listSocialAccounts(userId: string): Promise<SocialAccountS
   return rows.map(({ credentialId, ...row }) => ({ ...row, connected: credentialId !== null }));
 }
 
+export async function findOwnedInstagramCredential(userId: string, socialAccountId: number) {
+  const credential = await db.query.accountCredentials.findFirst({
+    where: { accountId: socialAccountId, RAW: (t) => ownedBy(t, userId) },
+  });
+  if (!credential) throw notFound("Instagram connection not found.");
+  return credential;
+}
+
 /**
  * Cabut akses Instagram: unlink dari better-auth lalu hapus row kredensial.
  * Row `social_accounts` & histori audit/post dibiarkan — disconnect mencabut
  * akses API, bukan menghapus riwayat.
  */
 export async function disconnectInstagram(userId: string, socialAccountId: number): Promise<void> {
-  const credential = await db.query.accountCredentials.findFirst({
-    where: { accountId: socialAccountId, RAW: (t) => ownedBy(t, userId) },
-  });
-  if (!credential) throw notFound("Instagram connection not found.");
+  const credential = await findOwnedInstagramCredential(userId, socialAccountId);
 
   const headers = await betterAuthSessionHeaders(userId);
   await auth.api.unlinkAccount({
