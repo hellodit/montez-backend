@@ -33,8 +33,6 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
   },
-  // Google dipakai lewat id-token flow (FE kirim ID token GIS ke /login/google),
-  // bukan redirect — jadi tidak ada redirect URI yang perlu didaftarkan di sini.
   socialProviders: {
     google: {
       clientId: env.GOOGLE_CLIENT_ID ?? '',
@@ -44,18 +42,12 @@ export const auth = betterAuth({
   account: {
     accountLinking: {
       enabled: true,
-      // Email Google terverifikasi oleh Google — aman ditautkan otomatis ke
-      // user email+password yang sudah ada dengan email sama.
       trustedProviders: ['google'],
-      // Email Instagram (placeholder, lihat provider "instagram" di plugins)
-      // tidak akan pernah sama dengan email login Montez — connect Instagram
-      // bukan login, jadi pencocokan email tidak relevan di sini.
       allowDifferentEmails: true,
     },
   },
   user: {
     additionalFields: {
-      // input: false = WAJIB, kalau tidak body /register bisa mengirim isAdmin: true.
       isAdmin: { type: 'boolean', required: false, defaultValue: false, input: false },
     },
   },
@@ -74,12 +66,6 @@ export const auth = betterAuth({
         }),
       },
     }),
-    // Connect Instagram (owner-access ke Instagram Graph API) — BUKAN metode
-    // login. providerId kustom "instagram" (bukan "facebook" native) sengaja
-    // dipakai agar tak pernah bisa dipanggil lewat /sign-in/social yang sudah
-    // dipakai Google; jalur login satu-satunya tetap email+password & Google.
-    // Flow: "Instagram API with Instagram Login" (bukan Facebook Login for
-    // Business) — satu authorize = satu akun IG, tanpa konsep Facebook Page.
     genericOAuth({
       config: [
         {
@@ -91,10 +77,6 @@ export const auth = betterAuth({
           userInfoUrl: 'https://graph.instagram.com/me?fields=id,username,name',
           scopes: ['instagram_business_basic', 'instagram_business_manage_insights'],
           redirectURI: env.META_REDIRECT_URI,
-          // better-auth mensyaratkan email non-kosong untuk setiap akun yang
-          // di-link, tapi Instagram tidak pernah mengembalikan email — nilai
-          // placeholder ini tidak pernah dipakai di mana pun (tidak disimpan
-          // ke tabel `user`, hanya memenuhi syarat internal better-auth).
           mapProfileToUser: (profile) => ({
             email: `${profile.id}@instagram.placeholder`,
             name: profile.username,
