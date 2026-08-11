@@ -6,7 +6,6 @@ import {cors} from "hono/cors";
 import {registerUserRoutes} from "./modules/users/users.routes";
 import {registerSocialAccountRoutes} from "./modules/social-accounts/social-accounts.routes";
 import {registerAuthRoutes} from "./modules/auth/auth.routes";
-import { env } from './config'
 import { type HonoBindings, type HonoVariables, MastraServer } from '@mastra/hono'
 import { mastra } from './mastra'
 
@@ -52,6 +51,9 @@ registerUserRoutes(apiRoute)
 registerSocialAccountRoutes(apiRoute)
 app.route("/api", apiRoute)
 
-export default {
-    port: env.PORT, fetch: app.fetch
-}
+// Vercel's zero-config Hono detection requires the plain app instance as the
+// default export (https://vercel.com/docs/frameworks/backend/hono). Bun also
+// auto-serves any entrypoint's default export that has a `.fetch` method,
+// falling back to `process.env.PORT` on its own — so this one export serves
+// both `bun run src/app.ts` locally and Vercel's Node.js runtime.
+export default app

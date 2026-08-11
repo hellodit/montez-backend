@@ -1,4 +1,4 @@
-import type { user } from "../../db/schema/user";
+import type { user } from "../../db/schema";
 
 /** Baris user penuh seperti dikembalikan Drizzle (source of truth = schema DB). */
 export type User = typeof user.$inferSelect;
