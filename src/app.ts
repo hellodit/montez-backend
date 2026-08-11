@@ -6,6 +6,7 @@ import {cors} from "hono/cors";
 import {registerUserRoutes} from "./modules/users/users.routes";
 import {registerSocialAccountRoutes} from "./modules/social-accounts/social-accounts.routes";
 import {registerAuthRoutes} from "./modules/auth/auth.routes";
+import {registerBillingRoutes} from "./modules/billing/billing.routes";
 import { type HonoBindings, type HonoVariables, MastraServer } from '@mastra/hono'
 import { mastra } from './mastra'
 
@@ -49,6 +50,7 @@ const apiRoute = new Hono()
 registerAuthRoutes(apiRoute)
 registerUserRoutes(apiRoute)
 registerSocialAccountRoutes(apiRoute)
+registerBillingRoutes(apiRoute)
 app.route("/api", apiRoute)
 
 // Served via `Bun.serve()` in src/server.ts (both locally and on Vercel's

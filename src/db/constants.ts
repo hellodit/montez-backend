@@ -105,3 +105,15 @@ export const INSTAGRAM_OAUTH_PROVIDER_ID = "instagram";
  */
 export const WEBHOOK_EVENT = { botReply: "bot.reply" } as const;
 export type WebhookEvent = (typeof WEBHOOK_EVENT)[keyof typeof WEBHOOK_EVENT];
+
+// ── billing ───────────────────────────────────────────────────────────────────
+
+/** Default kolom `subscription_transactions.status`. */
+export const SUBSCRIPTION_STATUS = {
+  pending: "pending",
+  paid: "paid",
+  failed: "failed",
+  expired: "expired",
+  cancelled: "cancelled",
+} as const;
+export type SubscriptionStatus = (typeof SUBSCRIPTION_STATUS)[keyof typeof SUBSCRIPTION_STATUS];

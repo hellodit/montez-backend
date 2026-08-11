@@ -13,6 +13,7 @@ export const relations = defineRelations(schema, (r) => ({
         patterns: r.many.patterns(),
         agents: r.many.agents(),
         chatConversations: r.many.chatConversations(),
+        subscriptionTransactions: r.many.subscriptionTransactions(),
     },
 
     session: {
@@ -118,5 +119,9 @@ export const relations = defineRelations(schema, (r) => ({
             to: r.knowledgebases.id,
         }),
         agent: r.one.agents({from: r.knowledgeChunks.agentId, to: r.agents.id}),
+    },
+
+    subscriptionTransactions: {
+        user: r.one.user({from: r.subscriptionTransactions.userId, to: r.user.id}),
     },
 }))

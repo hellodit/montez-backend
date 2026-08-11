@@ -50,6 +50,13 @@ export const auth = betterAuth({
     additionalFields: {
       isAdmin: { type: 'boolean', required: false, defaultValue: false, input: false },
     },
+    // App tidak punya infra kirim email sama sekali, jadi emailVerified selalu
+    // false secara praktis — updateEmailWithoutVerification aman: better-auth
+    // hanya mewajibkan verifikasi ulang kalau email LAMA sudah verified.
+    changeEmail: {
+      enabled: true,
+      updateEmailWithoutVerification: true,
+    },
   },
   plugins: [
     bearer(),

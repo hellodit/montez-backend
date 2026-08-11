@@ -49,6 +49,12 @@ const EnvSchema = z.object({
     TOOL_FETCH_TIMEOUT_MS: z.coerce.number().default(10_000),
     WEBHOOK_DELIVERY_TIMEOUT_MS: z.coerce.number().default(15_000),
     MASTRA_DATABASE_URL: z.url(),
+
+    // Midtrans (Snap) — top-up/upgrade plan. Kosong = POST /api/billing/checkout
+    // membalas 503, sama seperti pola Instagram/Google di atas.
+    MIDTRANS_SERVER_KEY: z.string().optional(),
+    MIDTRANS_CLIENT_KEY: z.string().optional(),
+    MIDTRANS_IS_PRODUCTION: z.coerce.boolean().default(false),
 })
 
 export const env = EnvSchema.parse(process.env)
