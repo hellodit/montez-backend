@@ -51,9 +51,7 @@ registerUserRoutes(apiRoute)
 registerSocialAccountRoutes(apiRoute)
 app.route("/api", apiRoute)
 
-// Vercel's zero-config Hono detection requires the plain app instance as the
-// default export (https://vercel.com/docs/frameworks/backend/hono). Bun also
-// auto-serves any entrypoint's default export that has a `.fetch` method,
-// falling back to `process.env.PORT` on its own — so this one export serves
-// both `bun run src/app.ts` locally and Vercel's Node.js runtime.
+// Served via `Bun.serve()` in src/server.ts (both locally and on Vercel's
+// Bun runtime) — see that file. `app` itself stays export-only here so tests
+// can import it directly with `app.request(...)`.
 export default app

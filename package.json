@@ -2,8 +2,8 @@
   "name": "montez-backend",
   "type": "module",
   "scripts": {
-    "dev": "bun run --hot src/app.ts",
-    "start": "bun run src/app.ts",
+    "dev": "bun run --hot src/server.ts",
+    "start": "bun run src/server.ts",
     "worker": "bun run --hot src/queue/runner.ts",
     "db:generate": "bunx drizzle-kit generate",
     "db:migrate": "bunx drizzle-kit migrate",
