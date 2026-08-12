@@ -13,6 +13,7 @@ import { mastra } from './mastra'
 export const app = new Hono()
 
 app.use("*", httpLogger());
+
 const mastraServer = new MastraServer({ app, mastra, prefix: '/mastra' })
 
 // CORS — allow any origin. `credentials: true` forbids a literal "*" ACAO
@@ -53,7 +54,11 @@ registerSocialAccountRoutes(apiRoute)
 registerBillingRoutes(apiRoute)
 app.route("/api", apiRoute)
 
-// Served via `Bun.serve()` in src/server.ts (both locally and on Vercel's
-// Bun runtime) — see that file. `app` itself stays export-only here so tests
-// can import it directly with `app.request(...)`.
-export default app
+// Bun's documented pattern: exporting a default object with `fetch` makes
+// `bun run src/app.ts` (and Vercel's Bun framework preset) start the server
+// directly, both locally and on Vercel's Bun runtime. Named export `app`
+// stays available so tests can call `app.request(...)` without a server.
+export default {
+    port: process.env.PORT,
+    fetch: app.fetch,
+}

@@ -16,4 +16,4 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 EXPOSE 3000
-CMD ["bun", "run", "src/server.ts"]
+CMD ["bun", "run", "src/app.ts"]
