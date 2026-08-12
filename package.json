@@ -13,18 +13,19 @@
     "studio": "mastra studio --port 4111 --server-port 3000 --server-api-prefix /mastra"
   },
   "dependencies": {
-    "@mastra/core": "^1.57.0",
-    "@mastra/hono": "^1.5.14",
-    "@mastra/pg": "^1.19.0",
+    "@mastra/auth-better-auth": "^1.1.3",
+    "@mastra/core": "^1.58.0",
+    "@mastra/duckdb": "^1.6.1",
+    "@mastra/hono": "^1.6.0",
+    "@mastra/observability": "^1.16.6",
+    "@mastra/pg": "^1.20.0",
     "@mastra/rag": "^2.4.2",
-    "@montez-tstack/db": "workspace:*",
-    "@montez-tstack/env": "workspace:*",
     "ai": "^7.0.31",
     "better-auth": "^1.6.26",
     "drizzle-orm": "^1.0.0-rc.4",
     "hono": "^4.13.0",
     "jose": "^6.2.8",
-    "pg": "^8.22.0",
+    "pg": "^8.22.0"
   },
   "devDependencies": {
     "@types/bun": "latest",

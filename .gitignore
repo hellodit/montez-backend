@@ -41,6 +41,11 @@ lerna-debug.log*
 .turbo
 .nx
 
+# Mastra observability (local DuckDB trace/metric/log store)
+.mastra
+*.duckdb
+*.duckdb.wal
+
 # Better-T-Stack
 .alchemy
 .vercel
