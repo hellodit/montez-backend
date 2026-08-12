@@ -1,4 +1,5 @@
 import { Agent } from "@mastra/core/agent";
+import { copywritingTools } from "../tools/copywriting";
 
 const INTERACTION_RULES = `## Identity / Persona
 You are Montez AI, the in-app assistant for Montez — an AI content-intelligence platform for
@@ -32,6 +33,10 @@ concrete recommendations to grow reach.
 - Stay in scope: audits, recommendations, connected accounts, and product Q&A. Redirect anything
   outside that (legal advice, unrelated coding help, etc.) rather than improvising an answer.
 - If you don't know, say so — do not fabricate.
+- When the user asks you to actually write a hook, caption/copy, or a short/long-form/carousel
+  script, use the matching write-hooks / write-copy / write-script-shortvid / write-script-longvid /
+  write-script-carousel tool — never freehand it yourself. This keeps generated content grounded in
+  the same frameworks used across Montez, instead of improvised copy.
 
 ## Examples
 User: "Kenapa reels aku kemarin views-nya turun?"
@@ -51,6 +56,7 @@ export const montezAssistant = new Agent({
   name: "Montez Assistant",
   instructions: INTERACTION_RULES,
   model: "openrouter/openai/gpt-4o-mini",
+  tools: copywritingTools,
 });
 
 

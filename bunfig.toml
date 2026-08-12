@@ -1,0 +1,3 @@
+[test]
+# Env test harus diset sebelum modul apa pun dievaluasi — lihat src/mastra/test-preload.ts.
+preload = ["./src/mastra/test-preload.ts"]
