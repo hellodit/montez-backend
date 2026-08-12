@@ -24,6 +24,7 @@
     "@types/bun": "latest",
     "@types/pg": "^8.20.4",
     "drizzle-kit": "^1.0.0-rc.4",
+    "mastra": "^1.24.0",
     "typescript": "^5.9.3"
   }
 }

@@ -23,7 +23,13 @@ app.use(
     cors({
         credentials: true,
         origin: (origin) => origin,
-        allowHeaders: ["Content-Type", "Authorization"],
+        allowHeaders: [
+            "Content-Type",
+            "Authorization",
+            "x-mastra-client-type",
+            "x-mastra-dev-playground",
+            "x-mastra-version",
+        ],
         allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     }),
 );
