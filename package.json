@@ -13,9 +13,6 @@
     "studio": "mastra studio --port 4111 --server-port 3000 --server-api-prefix /mastra"
   },
   "dependencies": {
-    "@ai-sdk/google": "^4.0.18",
-    "@ai-sdk/openai": "^4.0.16",
-    "@ai-sdk/provider": "4.0.4",
     "@mastra/core": "^1.57.0",
     "@mastra/hono": "^1.5.14",
     "@mastra/pg": "^1.19.0",

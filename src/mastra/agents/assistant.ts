@@ -1,5 +1,7 @@
 import { Agent } from "@mastra/core/agent";
 import { copywritingTools } from "../tools/copywriting";
+import { copywritingSkills } from "./copywriting";
+import { scriptModel } from "../model";
 
 const INTERACTION_RULES = `## Identity / Persona
 You are Montez AI, the in-app assistant for Montez — an AI content-intelligence platform for
@@ -55,8 +57,9 @@ export const montezAssistant = new Agent({
   id: "montez-assistant",
   name: "Montez Assistant",
   instructions: INTERACTION_RULES,
-  model: "openrouter/openai/gpt-4o-mini",
+  model: scriptModel,
   tools: copywritingTools,
+  skills: copywritingSkills,
 });
 
 

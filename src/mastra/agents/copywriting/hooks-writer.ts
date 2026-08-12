@@ -1,9 +1,10 @@
 import { Agent } from '@mastra/core/agent'
-import { scriptModel } from '../../providers'
+import { createSkill } from '@mastra/core/skills'
+import { scriptModel } from '../../model'
 import { HooksOutput } from '../../schemas/copywriting/hooks'
 import { toUsage } from '../../ai-result'
 import type { AiResult } from '../../ai-result'
-import { loadKnowledge } from './knowledge-loader'
+import { loadKnowledgeFiles, joinKnowledge } from './knowledge-loader'
 
 export function buildHooksUserMessage(input: {
   topic: string
@@ -40,12 +41,13 @@ export function buildHooksUserMessage(input: {
   return lines.join('\n')
 }
 
-const KNOWLEDGE = await loadKnowledge([
+const KNOWLEDGE_FILES = await loadKnowledgeFiles([
   'wtf-hook-framework.md',
   'hook-neuroscience.md',
   'hook-fundamental.md',
   '8-human-basic-instinct.md',
 ])
+const KNOWLEDGE = joinKnowledge(KNOWLEDGE_FILES)
 
 const INSTRUCTIONS = `You are the hooks-writer sub-agent for Montez AI. You implement the "write-hooks" SOP:
 given a topic, audience, goal, and optional language/tone preference, you generate scroll-stopping
@@ -100,16 +102,20 @@ Return a JSON object with a "hooks" array of exactly 5 items, each with:
 - Always cite "WTF Hook framework (Akademi Creator research)" as the pattern source.
 - Missing audience info would normally require clarification, but this agent only runs with topic and
   audience already provided by the caller.
-
-## Knowledge Reference
-
-${KNOWLEDGE}
 `
+
+export const writeHooksSkill = createSkill({
+  name: 'write-hooks',
+  description:
+    'Use when the user asks Montez AI to write, generate, or brainstorm hooks / opening lines for a topic and audience.',
+  instructions: INSTRUCTIONS,
+  references: KNOWLEDGE_FILES,
+})
 
 export const hooksWriter = new Agent({
   id: 'hooks-writer',
   name: 'hooks-writer',
-  instructions: INSTRUCTIONS,
+  instructions: `${INSTRUCTIONS}\n\n## Knowledge Reference\n\n${KNOWLEDGE}`,
   model: scriptModel,
   defaultOptions: { structuredOutput: { schema: HooksOutput } },
 })

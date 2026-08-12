@@ -5,6 +5,16 @@ const bulletOnly = {
   title: 'Kenapa Skincare Kamu Gagal',
   durationTarget: '8-12',
   outputMode: 'bullet_only',
+  cta: null,
+  caption: null,
+  hashtags: null,
+  youtubeChapters: null,
+  videoDescription: null,
+  thumbnailHeadlines: null,
+  seoTitleOptions: null,
+  youtubeTags: null,
+  contentRecommendations: null,
+  assumptions: null,
   chapters: [
     {
       position: 1,
@@ -52,7 +62,12 @@ describe('ScriptLongvidOutput', () => {
     const r = ScriptLongvidOutput.parse(bulletOnly)
     expect(r.outputMode).toBe('bullet_only')
     expect(r.chapters).toHaveLength(2)
-    expect(r.cta).toBeUndefined()
+    expect(r.cta).toBeNull()
+  })
+
+  it('rejects a bullet_only object missing a nullable field entirely', () => {
+    const { cta, ...rest } = bulletOnly
+    expect(() => ScriptLongvidOutput.parse(rest)).toThrow()
   })
 
   it('parses a full full_prod object with all 11 sections', () => {

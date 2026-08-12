@@ -1,11 +1,11 @@
 import { embedMany } from "ai";
 import { env } from "@montez-tstack/env/server";
 import { EMBEDDING_DIMENSIONS } from "@montez-tstack/db/constants";
-import { getEmbeddingModel } from "../providers";
+import { getEmbeddingModel } from "../model";
 
 /**
  * Embedding teks untuk RAG — strategi Mastra: `embedMany` AI SDK langsung dengan
- * embedding model aktif (providers.ts), netral provider. AI SDK memecah `values`
+ * embedding model aktif (model.ts), netral provider. AI SDK memecah `values`
  * jadi batch (maxEmbeddingsPerCall model) & jalan paralel; ketahanan diatur
  * operator (AI_EMBED_MAX_*), bukan hardcoded per-provider. Validasi invarian:
  * jumlah vektor == jumlah teks & dimensi == EMBEDDING_DIMENSIONS (kontrak kolom

@@ -5,16 +5,27 @@
  */
 const KNOWLEDGE_DIR = `${import.meta.dir}/../../knowledge/copywriting`;
 
-export async function loadKnowledge(filenames: string[]): Promise<string> {
-  const sections = await Promise.all(
+/** Baca file knowledge sebagai map filename → content, untuk Skill `references`. */
+export async function loadKnowledgeFiles(filenames: string[]): Promise<Record<string, string>> {
+  const entries = await Promise.all(
     filenames.map(async (filename) => {
       const file = Bun.file(`${KNOWLEDGE_DIR}/${filename}`);
       if (!(await file.exists())) {
-        throw new Error(`loadKnowledge: knowledge file not found: ${filename}`);
+        throw new Error(`loadKnowledgeFiles: knowledge file not found: ${filename}`);
       }
-      const content = await file.text();
-      return `## Source: ${filename}\n\n${content}`;
+      return [filename, await file.text()] as const;
     }),
   );
-  return sections.join("\n\n---\n\n");
+  return Object.fromEntries(entries);
+}
+
+/** Gabung map knowledge jadi satu blok teks, untuk instructions sub-agent generation. */
+export function joinKnowledge(files: Record<string, string>): string {
+  return Object.entries(files)
+    .map(([filename, content]) => `## Source: ${filename}\n\n${content}`)
+    .join("\n\n---\n\n");
+}
+
+export async function loadKnowledge(filenames: string[]): Promise<string> {
+  return joinKnowledge(await loadKnowledgeFiles(filenames));
 }

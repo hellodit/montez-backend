@@ -4,14 +4,14 @@ const CarouselProductionSlide = z.object({
   position: z.number().int().positive(),
   role: z.enum(['cover', 'second_hook', 'body', 'cta']),
   headline: z.string(),
-  subtitle: z.string().optional(),
-  body: z.string().optional(),
-  imageKeyword: z.string().optional(),
-  imageSource: z.string().optional(),
-  imageStyle: z.string().optional(),
-  swipeText: z.string().optional(),
-  ctaType: z.string().optional(),
-  ctaText: z.string().optional(),
+  subtitle: z.string().nullable(),
+  body: z.string().nullable(),
+  imageKeyword: z.string().nullable(),
+  imageSource: z.string().nullable(),
+  imageStyle: z.string().nullable(),
+  swipeText: z.string().nullable(),
+  ctaType: z.string().nullable(),
+  ctaText: z.string().nullable(),
 })
 
 export const ScriptCarouselOutput = z.object({
@@ -23,7 +23,7 @@ export const ScriptCarouselOutput = z.object({
   caption: z.string(),
   hashtags: z.array(z.string()),
   franchiseSuggestions: z.array(z.string()).min(3).max(5),
-  assumptions: z.array(z.string()).optional(),
+  assumptions: z.array(z.string()).nullable(),
 })
 
 export type ScriptCarouselOutput = z.infer<typeof ScriptCarouselOutput>

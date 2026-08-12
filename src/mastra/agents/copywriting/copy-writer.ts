@@ -1,9 +1,10 @@
 import { Agent } from '@mastra/core/agent'
-import { scriptModel } from '../../providers'
+import { createSkill } from '@mastra/core/skills'
+import { scriptModel } from '../../model'
 import { CopyOutput } from '../../schemas/copywriting/copy'
 import { toUsage } from '../../ai-result'
 import type { AiResult } from '../../ai-result'
-import { loadKnowledge } from './knowledge-loader'
+import { loadKnowledgeFiles, joinKnowledge } from './knowledge-loader'
 
 export type CopyWriterInput = {
   topic: string
@@ -39,7 +40,7 @@ export function buildCopyUserMessage(input: CopyWriterInput): string {
   return lines.join('\n')
 }
 
-const KNOWLEDGE = await loadKnowledge([
+const KNOWLEDGE_FILES = await loadKnowledgeFiles([
   'audience-centric.md',
   'voc-research-methods.md',
   'hook-fundamental.md',
@@ -56,6 +57,7 @@ const KNOWLEDGE = await loadKnowledge([
   'hashtag-seo-formula.md',
   'cta-anti-engagement-bait.md',
 ])
+const KNOWLEDGE = joinKnowledge(KNOWLEDGE_FILES)
 
 const INSTRUCTIONS = `You are the copy-writer sub-agent for Montez AI. You implement the "write-copy" SOP:
 given a topic, audience, goal, and a content_type (caption / carousel / ebook / ad / bio), you produce
@@ -112,16 +114,20 @@ Return a JSON object matching this shape:
 - Max 5 lines per paragraph, 1 idea per paragraph.
 - No forbidden openers: "Perkenalkan", "Di era", "Selamat pagi".
 - No brand voice, no specific emoji convention, no hardcoded tribe/niche assumption.
-
-## Knowledge Reference
-
-${KNOWLEDGE}
 `
+
+export const writeCopySkill = createSkill({
+  name: 'write-copy',
+  description:
+    'Use when the user asks Montez AI to write copy — a caption, carousel copy, ebook section, ad, or bio — for a topic and audience.',
+  instructions: INSTRUCTIONS,
+  references: KNOWLEDGE_FILES,
+})
 
 export const copyWriter = new Agent({
   id: 'copy-writer',
   name: 'copy-writer',
-  instructions: INSTRUCTIONS,
+  instructions: `${INSTRUCTIONS}\n\n## Knowledge Reference\n\n${KNOWLEDGE}`,
   model: scriptModel,
   defaultOptions: { structuredOutput: { schema: CopyOutput } },
 })

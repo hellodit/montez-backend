@@ -20,7 +20,7 @@ describe('HooksOutput', () => {
     expect(r.hooks[0]!.instinct_triggers).toEqual(['pride', 'fear'])
   })
 
-  it('parses a valid object without the optional insight_backing field', () => {
+  it('parses a valid object with insight_backing explicitly null', () => {
     const r = HooksOutput.parse({
       hooks: [
         {
@@ -30,10 +30,30 @@ describe('HooksOutput', () => {
           word_count: 6,
           instinct_triggers: ['curiosity'],
           rationale: 'Numeric specificity triggers curiosity gap.',
+          insight_backing: null,
         },
       ],
     })
-    expect(r.hooks[0]!.insight_backing).toBeUndefined()
+    expect(r.hooks[0]!.insight_backing).toBeNull()
+  })
+
+  it('rejects a hook object missing insight_backing entirely', () => {
+    expect(() =>
+      HooksOutput.parse({
+        hooks: [
+          {
+            rank: 2,
+            pattern_type: 'CRAZY_MATH_02',
+            hook_text: '99% of people get this wrong',
+            word_count: 6,
+            instinct_triggers: ['curiosity'],
+            rationale: 'Numeric specificity triggers curiosity gap.',
+            // insight_backing omitted entirely — OpenAI strict schemas require
+            // every property present (null when unused), never absent.
+          },
+        ],
+      }),
+    ).toThrow()
   })
 
   it('rejects an object with a non-string hook_text', () => {

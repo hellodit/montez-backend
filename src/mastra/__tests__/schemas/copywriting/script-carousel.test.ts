@@ -12,16 +12,24 @@ const valid = {
       role: 'cover',
       headline: 'Skincare rutin ini salah',
       subtitle: 'Nomor 3 paling sering',
+      body: null,
       imageKeyword: 'skincare routine flatlay',
       imageSource: 'Pexels',
       imageStyle: 'minimal',
       swipeText: 'Cek dulu sebelum lanjut >',
+      ctaType: null,
+      ctaText: null,
     },
     {
       position: 10,
       role: 'cta',
       headline: 'Mau tau rutin yang bener?',
+      subtitle: null,
       body: 'Share ke temen yang masih salah pakai.',
+      imageKeyword: null,
+      imageSource: null,
+      imageStyle: null,
+      swipeText: null,
       ctaType: 'Share',
       ctaText: 'Share carousel ini',
     },
@@ -29,6 +37,7 @@ const valid = {
   caption: 'Hook line SEO-rich.\n\nBody.\n\nMicro-CTA.',
   hashtags: ['#niche1', '#niche2', '#broad1', '#broad2', '#brand'],
   franchiseSuggestions: ['Angle haircare', 'Angle makeup', 'Angle diet'],
+  assumptions: null,
 }
 
 describe('ScriptCarouselOutput', () => {
@@ -55,6 +64,13 @@ describe('ScriptCarouselOutput', () => {
   it('rejects fewer than 3 franchise suggestions', () => {
     expect(() =>
       ScriptCarouselOutput.parse({ ...valid, franchiseSuggestions: ['only one'] }),
+    ).toThrow()
+  })
+
+  it('rejects a slide missing a nullable field entirely', () => {
+    const { subtitle, ...slideWithoutSubtitle } = valid.slides[0]!
+    expect(() =>
+      ScriptCarouselOutput.parse({ ...valid, slides: [slideWithoutSubtitle, valid.slides[1]] }),
     ).toThrow()
   })
 })

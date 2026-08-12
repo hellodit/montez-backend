@@ -1,9 +1,10 @@
 import { Agent } from '@mastra/core/agent'
-import { scriptModel } from '../../providers'
+import { createSkill } from '@mastra/core/skills'
+import { scriptModel } from '../../model'
 import { ScriptLongvidOutput } from '../../schemas/copywriting/script-longvid'
 import { toUsage } from '../../ai-result'
 import type { AiResult } from '../../ai-result'
-import { loadKnowledge } from './knowledge-loader'
+import { loadKnowledgeFiles, joinKnowledge } from './knowledge-loader'
 
 export type LongvidScriptInput = {
   topic: string
@@ -48,7 +49,7 @@ export function buildLongvidScriptUserMessage(input: LongvidScriptInput): string
   return lines.join('\n')
 }
 
-const KNOWLEDGE = await loadKnowledge([
+const KNOWLEDGE_FILES = await loadKnowledgeFiles([
   'longvid-video-styles.md',
   'longvid-output-modes.md',
   'wtf-hook-framework.md',
@@ -61,6 +62,7 @@ const KNOWLEDGE = await loadKnowledge([
   'hashtag-seo-formula.md',
   'cta-anti-engagement-bait.md',
 ])
+const KNOWLEDGE = joinKnowledge(KNOWLEDGE_FILES)
 
 const INSTRUCTIONS = `You are the longvid-script-writer sub-agent for Montez AI. You implement the
 "write-script-longvid" SOP: given a topic, audience level, duration target, output mode, and optional
@@ -122,16 +124,20 @@ Return a JSON object matching this shape:
 - Foreshadow arcs always get a payoff — no broken promises.
 - Final CTA is Malaka-style only, no bait anywhere.
 - No greeting/basa-basi, no forbidden phrases (script-writing-rules.md).
-
-## Knowledge Reference
-
-${KNOWLEDGE}
 `
+
+export const writeScriptLongvidSkill = createSkill({
+  name: 'write-script-longvid',
+  description:
+    'Use when the user asks Montez AI to write a long-form YouTube (5-20 min) chapter outline and/or script for a topic.',
+  instructions: INSTRUCTIONS,
+  references: KNOWLEDGE_FILES,
+})
 
 export const longvidScriptWriter = new Agent({
   id: 'longvid-script-writer',
   name: 'longvid-script-writer',
-  instructions: INSTRUCTIONS,
+  instructions: `${INSTRUCTIONS}\n\n## Knowledge Reference\n\n${KNOWLEDGE}`,
   model: scriptModel,
   defaultOptions: { structuredOutput: { schema: ScriptLongvidOutput } },
 })

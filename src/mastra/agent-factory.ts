@@ -1,7 +1,7 @@
 import { Agent } from "@mastra/core/agent";
 import type { createTool } from "@mastra/core/tools";
 import type { agents } from "../db/schema";
-import { scriptModel } from "./providers";
+import { scriptModel } from "./model";
 import type { RetrievedChunk } from "./rag/retrieve";
 import type { ChatMessage } from "./types";
 

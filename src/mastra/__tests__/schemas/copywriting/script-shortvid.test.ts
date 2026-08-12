@@ -16,6 +16,7 @@ const valid = {
   hashtags: ['#niche1', '#niche2', '#broad1', '#broad2', '#brand'],
   cta: 'Share ini ke temen yang masih pakai skincare abal-abal.',
   franchise_suggestions: ['Warning versi haircare', 'Warning versi makeup', 'Warning versi diet'],
+  assumptions: null,
 }
 
 describe('ScriptShortvidOutput', () => {
@@ -26,14 +27,26 @@ describe('ScriptShortvidOutput', () => {
     expect(r.franchise_suggestions.length).toBeGreaterThanOrEqual(3)
   })
 
-  it('parses without the optional assumptions field', () => {
+  it('parses with assumptions explicitly null', () => {
     const r = ScriptShortvidOutput.parse(valid)
-    expect(r.assumptions).toBeUndefined()
+    expect(r.assumptions).toBeNull()
   })
 
   it('rejects a missing script', () => {
     const { script, ...rest } = valid
     expect(() => ScriptShortvidOutput.parse(rest)).toThrow()
+  })
+
+  it('rejects an object missing assumptions entirely', () => {
+    const { assumptions, ...rest } = valid
+    expect(() => ScriptShortvidOutput.parse(rest)).toThrow()
+  })
+
+  it('rejects production_notes missing a nullable field entirely', () => {
+    const { delivery, ...restNotes } = valid.production_notes
+    expect(() =>
+      ScriptShortvidOutput.parse({ ...valid, production_notes: restNotes }),
+    ).toThrow()
   })
 
   it('rejects fewer than 3 franchise suggestions', () => {

@@ -9,7 +9,7 @@ export const HooksOutput = z.object({
       word_count: z.number().int().nonnegative(),
       instinct_triggers: z.array(z.string()),
       rationale: z.string(),
-      insight_backing: z.string().optional(),
+      insight_backing: z.string().nullable(),
     }),
   ),
 })

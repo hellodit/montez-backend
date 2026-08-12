@@ -3,16 +3,16 @@ import { z } from 'zod'
 const CarouselSlide = z.object({
   position: z.number().int().positive(),
   headline: z.string(),
-  subheadline: z.string().optional(),
-  body: z.string().optional(),
-  stat_number: z.string().optional(),
-  stat_unit: z.string().optional(),
-  stat_label: z.string().optional(),
-  source: z.string().optional(),
-  quote_text: z.string().optional(),
-  quote_author: z.string().optional(),
-  cta_text: z.string().optional(),
-  list_items: z.array(z.string()).optional(),
+  subheadline: z.string().nullable(),
+  body: z.string().nullable(),
+  stat_number: z.string().nullable(),
+  stat_unit: z.string().nullable(),
+  stat_label: z.string().nullable(),
+  source: z.string().nullable(),
+  quote_text: z.string().nullable(),
+  quote_author: z.string().nullable(),
+  cta_text: z.string().nullable(),
+  list_items: z.array(z.string()).nullable(),
 })
 
 export const CopyOutput = z.object({
@@ -20,10 +20,10 @@ export const CopyOutput = z.object({
   framework: z.enum(['HEIA', 'PAS', 'BAB']),
   copy: z.string(),
   rationale: z.string(),
-  hashtags: z.array(z.string()).optional(),
-  seo_first_line: z.string().optional(),
-  carousel: z.array(CarouselSlide).optional(),
-  assumptions: z.array(z.string()).optional(),
+  hashtags: z.array(z.string()).nullable(),
+  seo_first_line: z.string().nullable(),
+  carousel: z.array(CarouselSlide).nullable(),
+  assumptions: z.array(z.string()).nullable(),
 })
 
 export type CopyOutput = z.infer<typeof CopyOutput>

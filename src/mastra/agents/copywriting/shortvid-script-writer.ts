@@ -1,9 +1,10 @@
 import { Agent } from '@mastra/core/agent'
-import { scriptModel } from '../../providers'
+import { createSkill } from '@mastra/core/skills'
+import { scriptModel } from '../../model'
 import { ScriptShortvidOutput } from '../../schemas/copywriting/script-shortvid'
 import { toUsage } from '../../ai-result'
 import type { AiResult } from '../../ai-result'
-import { loadKnowledge } from './knowledge-loader'
+import { loadKnowledgeFiles, joinKnowledge } from './knowledge-loader'
 
 export type ShortvidScriptInput = {
   topic: string
@@ -46,7 +47,7 @@ export function buildShortvidScriptUserMessage(input: ShortvidScriptInput): stri
   return lines.join('\n')
 }
 
-const KNOWLEDGE = await loadKnowledge([
+const KNOWLEDGE_FILES = await loadKnowledgeFiles([
   'script-shortvid-formats.md',
   'script-writing-rules.md',
   'wtf-hook-framework.md',
@@ -54,6 +55,7 @@ const KNOWLEDGE = await loadKnowledge([
   'pakarhr-case-study.md',
   'cta-anti-engagement-bait.md',
 ])
+const KNOWLEDGE = joinKnowledge(KNOWLEDGE_FILES)
 
 const INSTRUCTIONS = `You are the shortvid-script-writer sub-agent for Montez AI. You implement the
 "write-script-shortvid" SOP: given a topic, audience, goal, and optional chained hook/format/duration,
@@ -111,16 +113,20 @@ Return a JSON object matching this shape:
 - All script lines 3-8 words. Bahasa lisan applied. No forbidden phrases.
 - No "────" dividers, no tables in the script body.
 - CTA must match the format and stay Malaka-style (no bait of any kind).
-
-## Knowledge Reference
-
-${KNOWLEDGE}
 `
+
+export const writeScriptShortvidSkill = createSkill({
+  name: 'write-script-shortvid',
+  description:
+    'Use when the user asks Montez AI to write a full short-form video script (Reels/TikTok/Shorts) for a topic and audience.',
+  instructions: INSTRUCTIONS,
+  references: KNOWLEDGE_FILES,
+})
 
 export const shortvidScriptWriter = new Agent({
   id: 'shortvid-script-writer',
   name: 'shortvid-script-writer',
-  instructions: INSTRUCTIONS,
+  instructions: `${INSTRUCTIONS}\n\n## Knowledge Reference\n\n${KNOWLEDGE}`,
   model: scriptModel,
   defaultOptions: { structuredOutput: { schema: ScriptShortvidOutput } },
 })

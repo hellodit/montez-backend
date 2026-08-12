@@ -1,9 +1,10 @@
 import { Agent } from '@mastra/core/agent'
-import { scriptModel } from '../../providers'
+import { createSkill } from '@mastra/core/skills'
+import { scriptModel } from '../../model'
 import { ScriptCarouselOutput } from '../../schemas/copywriting/script-carousel'
 import { toUsage } from '../../ai-result'
 import type { AiResult } from '../../ai-result'
-import { loadKnowledge } from './knowledge-loader'
+import { loadKnowledgeFiles, joinKnowledge } from './knowledge-loader'
 
 export type CarouselScriptInput = {
   topic: string
@@ -62,7 +63,7 @@ export function buildCarouselScriptUserMessage(input: CarouselScriptInput): stri
   return lines.join('\n')
 }
 
-const KNOWLEDGE = await loadKnowledge([
+const KNOWLEDGE_FILES = await loadKnowledgeFiles([
   'carousel-formats.md',
   'carousel-swipe-psychology.md',
   'wtf-hook-framework.md',
@@ -75,6 +76,7 @@ const KNOWLEDGE = await loadKnowledge([
   'hashtag-seo-formula.md',
   'cta-anti-engagement-bait.md',
 ])
+const KNOWLEDGE = joinKnowledge(KNOWLEDGE_FILES)
 
 const INSTRUCTIONS = `You are the carousel-script-writer sub-agent for Montez AI. You implement the
 "write-script-carousel" SOP: given a topic, audience, format, platform, and data depth (plus optional
@@ -130,16 +132,20 @@ Return a JSON object matching this shape:
   out-of-range value, clamp to the nearest bound and flag that in "assumptions".
 - Every non-CTA slide needs a cliffhanger/open loop/question/pivot word.
 - Final CTA is Malaka-style only, no bait anywhere.
-
-## Knowledge Reference
-
-${KNOWLEDGE}
 `
+
+export const writeScriptCarouselSkill = createSkill({
+  name: 'write-script-carousel',
+  description:
+    'Use when the user asks Montez AI to write a full carousel production sheet (slide-by-slide script) for a topic, audience, and platform.',
+  instructions: INSTRUCTIONS,
+  references: KNOWLEDGE_FILES,
+})
 
 export const carouselScriptWriter = new Agent({
   id: 'carousel-script-writer',
   name: 'carousel-script-writer',
-  instructions: INSTRUCTIONS,
+  instructions: `${INSTRUCTIONS}\n\n## Knowledge Reference\n\n${KNOWLEDGE}`,
   model: scriptModel,
   defaultOptions: { structuredOutput: { schema: ScriptCarouselOutput } },
 })
