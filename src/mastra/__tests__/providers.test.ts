@@ -5,7 +5,7 @@ import { generateText } from 'ai'
 process.env.OPENROUTER_API_KEY = 'sk-or-test'
 process.env.OPENROUTER_SITE_URL = 'https://montez.example'
 process.env.OPENROUTER_MODEL = 'openai/gpt-4o-mini'
-const { scriptModel } = await import('./providers')
+const { scriptModel } = await import('../providers')
 
 const realFetch = globalThis.fetch
 afterEach(() => {

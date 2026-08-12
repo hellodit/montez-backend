@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { transcribe } from './transcribe'
+import { transcribe } from '../../services/transcribe'
 
 describe('transcribe', () => {
   it('posts multipart to transcription endpoint and returns text + duration', async () => {

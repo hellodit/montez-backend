@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { BUILTIN_TOOL_NAMES, buildBuiltinTools } from "./builtin";
+import { BUILTIN_TOOL_NAMES, buildBuiltinTools } from "../../tools/builtin";
 
 describe("built-in tools", () => {
   test("exposes get_current_time", () => {

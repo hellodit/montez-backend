@@ -1,5 +1,5 @@
 import { test, expect } from 'bun:test'
-import { auditAssistant } from './audit-assistant'
+import { auditAssistant } from '../../agents/audit-assistant'
 
 test('auditAssistant is registered with tools', async () => {
   expect(auditAssistant.id).toBe('audit-assistant')

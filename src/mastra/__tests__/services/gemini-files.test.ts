@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { uploadToGemini } from './gemini-files'
+import { uploadToGemini } from '../../services/gemini-files'
 
 function res(init: { ok: boolean; status?: number; headers?: Record<string, string>; json?: unknown }) {
   return {

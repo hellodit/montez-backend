@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getCurrentTime } from "./get-current-time";
+import { getCurrentTime } from "../../tools/get-current-time";
 
 describe("get_current_time", () => {
   test("returns ok with iso + formatted for a valid timezone", () => {

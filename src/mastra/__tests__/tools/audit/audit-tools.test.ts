@@ -2,7 +2,7 @@ import { test, expect, beforeAll, afterAll, describe } from 'bun:test'
 import { eq } from 'drizzle-orm'
 import { db } from "@montez-tstack/db"
 import { user, audits } from "@montez-tstack/db/schema"
-import { getRecentAudits, getAuditReportForUser } from './audit-tools.service'
+import { getRecentAudits, getAuditReportForUser } from '../../../tools/audit/audit-tools.service'
 
 /**
  * Integration test: SATU-SATUNYA test di paket ini yang menulis ke database.

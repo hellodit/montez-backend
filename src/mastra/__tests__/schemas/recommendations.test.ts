@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { RecommendationsOutput } from './recommendations'
+import { RecommendationsOutput } from '../../schemas/recommendations'
 
 describe('RecommendationsOutput', () => {
   it('parses a valid object', () => {

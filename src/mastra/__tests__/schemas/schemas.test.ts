@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test'
-import { VisionOutput } from './vision'
-import { ScriptOutput } from './script'
-import { SentimentOutput } from './sentiment'
+import { VisionOutput } from '../../schemas/vision'
+import { ScriptOutput } from '../../schemas/script'
+import { SentimentOutput } from '../../schemas/sentiment'
 
 const validVisual = {
   format: 'talking_head',
