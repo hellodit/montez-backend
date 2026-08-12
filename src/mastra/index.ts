@@ -1,12 +1,12 @@
 import { Mastra } from '@mastra/core'
-import {assistantAgent} from "./agents/assistant";
+import {montezAssistant} from "./agents/assistant";
 import {PostgresStore} from "@mastra/pg";
 import { env } from "../config";
 
 export function createMastra() {
   return new Mastra({
     agents: {
-      assistant: assistantAgent,
+      assistant: montezAssistant,
     },
     storage: new PostgresStore({
       id: "mastra-storage",
