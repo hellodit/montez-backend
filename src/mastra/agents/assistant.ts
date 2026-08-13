@@ -1,7 +1,29 @@
 import { Agent } from "@mastra/core/agent";
+import { Memory } from "@mastra/memory";
 import { copywritingTools } from "../tools/copywriting";
 import { copywritingSkills } from "./copywriting";
 import { scriptModel } from "../model";
+
+const WORKING_MEMORY_TEMPLATE = `# Creator Profile
+- Name:
+- Plan:
+- Connected Platforms:
+- Content Niche/Goals:
+- Preferred Language:
+- Recent Topics Discussed:
+`;
+
+// No explicit `storage` — inherits the Mastra instance's storage (src/mastra/index.ts).
+const montezAssistantMemory = new Memory({
+  options: {
+    lastMessages: 20,
+    workingMemory: {
+      enabled: true,
+      scope: "resource",
+      template: WORKING_MEMORY_TEMPLATE,
+    },
+  },
+});
 
 const INTERACTION_RULES = `## Identity / Persona
 You are Montez AI, the in-app assistant for Montez — an AI content-intelligence platform for
@@ -40,6 +62,13 @@ concrete recommendations to grow reach.
   write-script-carousel tool — never freehand it yourself. This keeps generated content grounded in
   the same frameworks used across Montez, instead of improvised copy.
 
+## Memory
+- The Creator Profile block above your conversation is working memory — it persists across every
+  thread for this user. Keep it current: when the user mentions their name, plan, connected
+  platforms, content niche/goals, or preferred language, update the profile with it.
+- Use the profile to personalize responses (e.g. mirror their preferred language, reference their
+  plan) without asking the user to repeat information you already have.
+
 ## Examples
 User: "Kenapa reels aku kemarin views-nya turun?"
 Assistant: "Dari audit terakhir, hook kamu masuk kategori 'normal' (skor 4/10) dan CTA-nya nggak
@@ -60,6 +89,7 @@ export const montezAssistant = new Agent({
   model: scriptModel,
   tools: copywritingTools,
   skills: copywritingSkills,
+  memory: montezAssistantMemory,
 });
 
 
