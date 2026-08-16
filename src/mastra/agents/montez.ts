@@ -2,7 +2,6 @@ import { Agent } from "@mastra/core/agent";
 import { Memory } from "@mastra/memory";
 import { copywritingTools } from "../tools/copywriting";
 import { copywritingSkills } from "./copywriting";
-import { scriptModel } from "../model";
 
 const WORKING_MEMORY_TEMPLATE = `# Creator Profile
 - Name:
