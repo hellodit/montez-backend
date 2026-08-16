@@ -17,9 +17,7 @@ function isAdminUser(betterAuthUser: BetterAuthUser): boolean {
 const OBSERVABILITY_DB_PATH = ".mastra/observability.duckdb";
 
 export function createMastra() {
-  // DuckDB doesn't create its parent directory on its own.
   mkdirSync(".mastra", { recursive: true });
-
   return new Mastra({
     agents: {
       assistant: montezAssistant,
