@@ -32,7 +32,6 @@ export function createMastra() {
         disableInit: false,
       }),
       domains: {
-        // Traces/metrics/logs need an OLAP store — Postgres isn't supported for metrics.
         observability: new DuckDBStore({ path: OBSERVABILITY_DB_PATH }).observability,
       },
     }),
@@ -45,12 +44,7 @@ export function createMastra() {
       },
     }),
     server: {
-      // Reuse the app's own Better Auth instance — Studio logs in with the same
-      // email/password accounts, but only admins (isAdmin) get past authorization.
       auth: new MastraAuthBetterAuth({
-        // Cast: our `auth` instance's additionalFields (isAdmin) make its type
-        // more specific than the generic `Auth` this package expects — safe,
-        // since it's a strict superset at runtime.
         auth: auth as unknown as Auth,
         signUpEnabled: false,
         authorizeUser: async (user) => isAdminUser(user),
