@@ -4,7 +4,7 @@ import { Mastra } from '@mastra/core'
 import { MastraCompositeStore } from "@mastra/core/storage";
 import { Observability, MastraStorageExporter, MastraPlatformExporter } from "@mastra/observability";
 import { MastraAuthBetterAuth, type BetterAuthUser } from "@mastra/auth-better-auth";
-import {montezAssistant} from "./agents/assistant";
+import {montezAssistant} from "./agents/montez";
 import {PostgresStore} from "@mastra/pg";
 import { DuckDBStore } from "@mastra/duckdb";
 import { auth } from "../modules/auth/auth";

@@ -86,7 +86,7 @@ export const montezAssistant = new Agent({
   id: "montez-assistant",
   name: "Montez Assistant",
   instructions: INTERACTION_RULES,
-  model: scriptModel,
+  model: "openrouter/openai/gpt-5.4",
   tools: copywritingTools,
   skills: copywritingSkills,
   memory: montezAssistantMemory,
