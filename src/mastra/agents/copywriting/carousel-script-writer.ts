@@ -1,6 +1,5 @@
 import { Agent } from '@mastra/core/agent'
 import { createSkill } from '@mastra/core/skills'
-import { scriptModel } from '../../model'
 import { ScriptCarouselOutput } from '../../schemas/copywriting/script-carousel'
 import { toUsage } from '../../ai-result'
 import type { AiResult } from '../../ai-result'
@@ -146,7 +145,7 @@ export const carouselScriptWriter = new Agent({
   id: 'carousel-script-writer',
   name: 'carousel-script-writer',
   instructions: `${INSTRUCTIONS}\n\n## Knowledge Reference\n\n${KNOWLEDGE}`,
-  model: scriptModel,
+  model: "openrouter/openai/gpt-5.4",
   defaultOptions: { structuredOutput: { schema: ScriptCarouselOutput } },
 })
 

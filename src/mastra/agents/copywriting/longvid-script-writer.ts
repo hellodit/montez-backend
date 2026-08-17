@@ -1,6 +1,5 @@
 import { Agent } from '@mastra/core/agent'
 import { createSkill } from '@mastra/core/skills'
-import { scriptModel } from '../../model'
 import { ScriptLongvidOutput } from '../../schemas/copywriting/script-longvid'
 import { toUsage } from '../../ai-result'
 import type { AiResult } from '../../ai-result'
@@ -138,7 +137,7 @@ export const longvidScriptWriter = new Agent({
   id: 'longvid-script-writer',
   name: 'longvid-script-writer',
   instructions: `${INSTRUCTIONS}\n\n## Knowledge Reference\n\n${KNOWLEDGE}`,
-  model: scriptModel,
+  model: "openrouter/openai/gpt-5.4",
   defaultOptions: { structuredOutput: { schema: ScriptLongvidOutput } },
 })
 

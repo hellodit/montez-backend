@@ -1,7 +1,6 @@
 import { embedMany } from "ai";
 import { env } from "@montez-tstack/env/server";
 import { EMBEDDING_DIMENSIONS } from "@montez-tstack/db/constants";
-import { getEmbeddingModel } from "../model";
 
 /**
  * Embedding teks untuk RAG — strategi Mastra: `embedMany` AI SDK langsung dengan
@@ -24,7 +23,7 @@ export async function embedTexts(
   if (texts.length === 0) return { embeddings: [], usage: { tokens: 0 } };
 
   const { embeddings, usage } = await embedMany({
-    model: getEmbeddingModel(),
+    model: "openrouter/openai/gpt-5.4",
     values: texts,
     maxParallelCalls: env.AI_EMBED_MAX_PARALLEL,
     maxRetries: env.AI_EMBED_MAX_RETRIES,
