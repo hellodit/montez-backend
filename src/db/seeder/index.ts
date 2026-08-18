@@ -5,7 +5,7 @@ import { user } from "../schema";
 
 
 const ADMIN_EMAIL = "user@montezai.com";
-const ADMIN_PASSWORD = "user123"; // Better Auth: minimal 8 karakter
+const ADMIN_PASSWORD = "montezai2026"; // Better Auth: minimal 8 karakter
 const ADMIN_NAME = "Admin Montez AI";
 
 async function seedAdmin(): Promise<void> {
