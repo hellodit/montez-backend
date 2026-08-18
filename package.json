@@ -7,7 +7,7 @@
     "worker": "bun run --hot src/queue/runner.ts",
     "db:generate": "bunx drizzle-kit generate",
     "db:migrate": "bunx drizzle-kit migrate",
-    "db:seed": "bun run src/db/seed.ts",
+    "db:seed": "bun run src/db/seeder/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "studio": "mastra studio --port 4111 --server-port 3000 --server-api-prefix /mastra"
