@@ -4,7 +4,7 @@ import "dotenv/config";
 export default defineConfig({
   dialect: "postgresql",
   schema: "./src/db/schema/index.ts",
-  out: "./drizzle",
+  out: "./src/db/migrations",
   dbCredentials: {
     url: process.env.DATABASE_URL ?? "postgres://default:secret@localhost:5432/montez_audit",
   },

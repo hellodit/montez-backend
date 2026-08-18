@@ -1,4 +1,7 @@
-import 'dotenv/config'
+// Bun auto-loads .env.local before this file runs and it wins over .env;
+// override:true forces .env's values to take precedence instead.
+import {config} from 'dotenv'
+config({override: true})
 import {Hono} from 'hono'
 import {errorHandler} from './middlewares/error.middleware'
 import {httpLogger} from "./middlewares/logger.middleware";
